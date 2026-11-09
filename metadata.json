@@ -1,0 +1,6 @@
+{
+  "name": "VayuPulse AI - Real-Time Air Quality Intelligence",
+  "description": "Real-time air quality intelligence platform for the Lets Code Diwali Challenge 2026 (Breathe Better). Featuring live telemetry, interactive map, historical tracker, 3D telemetry cube, biosphere mood converter, and AI Copilot.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
