@@ -46,7 +46,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
   return (
     <section className="relative space-y-6">
       {/* Dynamic Ambient Aurora Volumetric Glow Blobs */}
-      <div className="pointer-events-none absolute -top-24 left-1/4 w-[600px] h-[400px] rounded-full blur-[140px] opacity-25 transition-all duration-1000 -z-10"
+      <div className="pointer-events-none absolute -top-24 left-0 md:left-1/4 w-[600px] max-w-[calc(100vw-2rem)] h-[400px] rounded-full blur-[140px] opacity-25 transition-all duration-1000 -z-10"
         style={{ backgroundColor: category.color }}
       ></div>
 

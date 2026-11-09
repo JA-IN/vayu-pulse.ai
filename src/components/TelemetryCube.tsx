@@ -35,11 +35,25 @@ export const TelemetryCube: React.FC<TelemetryCubeProps> = ({ data }) => {
   const [rotY, setRotY] = useState<number>(24);
   const [isExploded, setIsExploded] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
+  const [cubeSize, setCubeSize] = useState(300);
 
   const dragStartRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const startRotRef = useRef<{ x: number; y: number }>({ x: -16, y: 24 });
+  const rotationRef = useRef<{ x: number; y: number }>({ x: -16, y: 24 });
+  const dragPointerIdRef = useRef<number | null>(null);
   const cubeRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      setCubeSize(Math.max(220, Math.min(300, entry.contentRect.width - 24)));
+    });
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, []);
 
   // Check prefers-reduced-motion
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
@@ -54,34 +68,47 @@ export const TelemetryCube: React.FC<TelemetryCubeProps> = ({ data }) => {
   const snapToFace = useCallback((face: CubeFace) => {
     setActiveFace(face);
     const target = FACE_ROTATIONS[face];
+    rotationRef.current = { x: target.x, y: target.y };
     setRotX(target.x);
     setRotY(target.y);
   }, []);
 
   // Pointer drag controls (Mouse & Touch)
   const handlePointerDown = (e: React.PointerEvent) => {
+    if (!e.isPrimary) return;
+    dragPointerIdRef.current = e.pointerId;
     setIsDragging(true);
     dragStartRef.current = { x: e.clientX, y: e.clientY };
-    startRotRef.current = { x: rotX, y: rotY };
-    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+    startRotRef.current = rotationRef.current;
+    e.currentTarget.setPointerCapture(e.pointerId);
   };
 
   const handlePointerMove = (e: React.PointerEvent) => {
-    if (!isDragging) return;
+    if (dragPointerIdRef.current !== e.pointerId) return;
     const deltaX = e.clientX - dragStartRef.current.x;
     const deltaY = e.clientY - dragStartRef.current.y;
-    // Map drag distance to degrees
-    setRotY(startRotRef.current.y + deltaX * 0.5);
-    setRotX(Math.max(-120, Math.min(120, startRotRef.current.x - deltaY * 0.5)));
+    const nextRotation = {
+      y: startRotRef.current.y + deltaX * 0.85,
+      x: Math.max(-120, Math.min(120, startRotRef.current.x - deltaY * 0.85)),
+    };
+    rotationRef.current = nextRotation;
+    if (cubeRef.current) {
+      cubeRef.current.style.transform = `rotateX(${nextRotation.x}deg) rotateY(${nextRotation.y}deg)`;
+    }
   };
 
   const handlePointerUp = (e: React.PointerEvent) => {
-    if (!isDragging) return;
+    if (dragPointerIdRef.current !== e.pointerId) return;
+    dragPointerIdRef.current = null;
+    setRotX(rotationRef.current.x);
+    setRotY(rotationRef.current.y);
     setIsDragging(false);
     try {
-      (e.target as HTMLElement).releasePointerCapture(e.pointerId);
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
     } catch {
-      // Ignore if not captured
+      // The pointer may already have been released by the browser.
     }
   };
 
@@ -89,24 +116,31 @@ export const TelemetryCube: React.FC<TelemetryCubeProps> = ({ data }) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowRight') {
       e.preventDefault();
-      setRotY((prev) => prev - 45);
+      const next = { ...rotationRef.current, y: rotationRef.current.y - 45 };
+      rotationRef.current = next;
+      setRotY(next.y);
     } else if (e.key === 'ArrowLeft') {
       e.preventDefault();
-      setRotY((prev) => prev + 45);
+      const next = { ...rotationRef.current, y: rotationRef.current.y + 45 };
+      rotationRef.current = next;
+      setRotY(next.y);
     } else if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setRotX((prev) => Math.min(120, prev + 30));
+      const next = { ...rotationRef.current, x: Math.min(120, rotationRef.current.x + 30) };
+      rotationRef.current = next;
+      setRotX(next.x);
     } else if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setRotX((prev) => Math.max(-120, prev - 30));
+      const next = { ...rotationRef.current, x: Math.max(-120, rotationRef.current.x - 30) };
+      rotationRef.current = next;
+      setRotX(next.x);
     }
   };
 
   const aqiVal = data.current.us_aqi.value;
   const aqiCat = getAqiCategory(aqiVal);
 
-  // Half-dimension of cube (150px on desktop = 300px cube)
-  const HALF_CUBE = 150;
+  const HALF_CUBE = cubeSize / 2;
 
   return (
     <div className="glass-panel rounded-2xl p-5 sm:p-6 flex flex-col justify-between relative overflow-hidden select-none">
@@ -140,6 +174,11 @@ export const TelemetryCube: React.FC<TelemetryCubeProps> = ({ data }) => {
         </div>
       </div>
 
+      <div className="mb-2 flex items-center justify-center gap-2 rounded-lg border border-emerald-400/25 bg-emerald-500/10 px-3 py-2 text-[10px] sm:text-xs font-mono text-emerald-200">
+        <span className="material-symbols-outlined text-[16px] animate-pulse">touch_app</span>
+        <span><strong>Touch and drag the cube to rotate.</strong> Use the face buttons below to jump to a panel.</span>
+      </div>
+
       {/* 3D Viewport Stage */}
       <div
         ref={containerRef}
@@ -149,9 +188,9 @@ export const TelemetryCube: React.FC<TelemetryCubeProps> = ({ data }) => {
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerUp}
-        className="relative w-full h-[320px] sm:h-[340px] flex items-center justify-center cursor-grab active:cursor-grabbing focus:outline-none focus:ring-1 focus:ring-emerald-400/50 rounded-xl bg-[#060e20]/40 overflow-hidden"
-        style={{ perspective: '1000px' }}
-        aria-label="Interactive 3D Telemetry Cube. Use mouse drag or arrow keys to rotate."
+        className="relative w-full flex items-center justify-center cursor-grab active:cursor-grabbing focus:outline-none focus:ring-1 focus:ring-emerald-400/50 rounded-xl bg-[#060e20]/40 overflow-hidden"
+        style={{ perspective: '1000px', height: `${Math.max(280, cubeSize + 40)}px`, touchAction: 'none' }}
+        aria-label="Interactive 3D Telemetry Cube. Touch and drag on mobile, drag with a mouse, or use arrow keys to rotate."
       >
         {/* Subtle radial ambient floor glow */}
         <div
@@ -162,11 +201,14 @@ export const TelemetryCube: React.FC<TelemetryCubeProps> = ({ data }) => {
         {/* The 3D Cube Container */}
         <div
           ref={cubeRef}
-          className="relative w-[280px] h-[280px] sm:w-[300px] sm:h-[300px] preserve-3d transition-transform"
+          className="relative preserve-3d transition-transform"
           style={{
             transform: `rotateX(${rotX}deg) rotateY(${rotY}deg)`,
+            width: `${cubeSize}px`,
+            height: `${cubeSize}px`,
             transitionDuration: isDragging || prefersReducedMotion ? '0ms' : '450ms',
             transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+            willChange: 'transform',
           }}
         >
           {/* FACE 1: FRONT - 3x3 Pollutant Matrix */}

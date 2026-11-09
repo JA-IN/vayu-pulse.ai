@@ -262,17 +262,29 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             onClick={handleDetectLocation}
             disabled={geoLocating}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#171f33] hover:bg-[#222a3d] border border-white/10 text-emerald-400 text-xs font-mono font-medium transition-colors"
-            title="Locate via device GPS"
+            className="flex min-h-10 items-center gap-2 px-2.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] sm:text-xs font-mono font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+            title="Check current location using your device GPS"
+            aria-label="Check current location using your device GPS"
           >
-            <span
-              className={`material-symbols-outlined text-[16px] ${
-                geoLocating ? 'animate-spin' : ''
-              }`}
-            >
-              near_me
+            <span className="relative flex shrink-0">
+              <span
+                className={`material-symbols-outlined text-[18px] ${
+                  geoLocating ? 'animate-spin' : ''
+                }`}
+              >
+                near_me
+              </span>
+              {!geoLocating && (
+                <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-emerald-300 ring-2 ring-[#171f33]" />
+              )}
             </span>
-            <span className="hidden sm:inline">Detect Air</span>
+            <span className="max-w-[76px] text-left leading-tight">
+              {geoLocating
+                ? 'Finding location…'
+                : currentCity.name === 'My Exact Location'
+                  ? 'Location active'
+                  : 'Check current location'}
+            </span>
           </button>
 
           {/* Data Status Pill */}
