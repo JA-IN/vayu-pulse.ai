@@ -84,7 +84,22 @@ async function requestCpcbRecords(state: string, city: string, token: string): P
   url.searchParams.set('filters[state]', state);
   url.searchParams.set('filters[city]', city);
 
-  const response = await fetch(url, { signal: AbortSignal.timeout(12000) });
+  let response: Response;
+  try {
+    response = await fetch(url, { signal: AbortSignal.timeout(12000) });
+  } catch (error) {
+    const cause = error instanceof Error && 'cause' in error ? error.cause : undefined;
+    const causeCode = cause && typeof cause === 'object' && 'code' in cause &&
+      typeof cause.code === 'string'
+      ? cause.code
+      : undefined;
+    console.error('[CPCB] Could not reach data.gov.in', {
+      error: error instanceof Error ? error.message : 'Unknown fetch error',
+      causeCode,
+    });
+    throw new Error('Could not connect to the CPCB data service. Check the Vercel function logs and try again later.');
+  }
+
   if (response.status === 429) {
     throw new Error('CPCB data service rate limit reached. Please try again later.');
   }

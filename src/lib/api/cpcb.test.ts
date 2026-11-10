@@ -68,6 +68,31 @@ test('reports missing server-side data.gov.in key', async () => {
   }
 });
 
+test('reports upstream connection failures without exposing secrets', async () => {
+  const previousKey = process.env.DATA_GOV_IN_API_KEY;
+  const previousFetch = globalThis.fetch;
+  const previousConsoleError = console.error;
+  const logArgs: unknown[][] = [];
+  process.env.DATA_GOV_IN_API_KEY = 'test-data-key';
+  globalThis.fetch = async () => {
+    throw new TypeError('fetch failed', { cause: { code: 'ENETUNREACH' } });
+  };
+  console.error = (...args: unknown[]) => logArgs.push(args);
+
+  try {
+    const result = await callHandler('/api/cpcb/air-quality?state=Delhi&city=Networkville');
+    assert.equal(result.statusCode, 502);
+    assert.match(JSON.parse(result.body).message, /Could not connect to the CPCB data service/);
+    assert.match(JSON.stringify(logArgs), /ENETUNREACH/);
+    assert.equal(JSON.stringify(logArgs).includes('test-data-key'), false);
+  } finally {
+    globalThis.fetch = previousFetch;
+    console.error = previousConsoleError;
+    if (previousKey === undefined) delete process.env.DATA_GOV_IN_API_KEY;
+    else process.env.DATA_GOV_IN_API_KEY = previousKey;
+  }
+});
+
 test('normalizes and caches CPCB records for 30 minutes without exposing the API key', async () => {
   const previousKey = process.env.DATA_GOV_IN_API_KEY;
   const previousFetch = globalThis.fetch;
