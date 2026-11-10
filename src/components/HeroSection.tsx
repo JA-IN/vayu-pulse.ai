@@ -23,7 +23,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
     <section className="relative space-y-4">
       <div className="pointer-events-none absolute -top-16 left-0 h-56 w-full rounded-full bg-indigo-400/10 blur-3xl" />
 
-      <div className="data-card relative grid gap-5 overflow-hidden rounded-3xl p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8">
+      <div className="hero-gradient data-card relative grid gap-5 overflow-hidden rounded-3xl p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8">
         <div className="pointer-events-none absolute -right-20 -top-28 h-64 w-64 rounded-full blur-3xl opacity-15" style={{ backgroundColor: category.color }} />
         <div className="relative">
           <p className="section-eyebrow">Current air quality</p>
@@ -94,24 +94,24 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           </span>
           <span className="disclosure-icon" aria-hidden="true">+</span>
         </summary>
-        <div className="mt-5 rounded-2xl border border-indigo-300/15 bg-indigo-400/[0.06] p-4 text-xs leading-5 text-indigo-100/80">
+        <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-xs leading-5 text-slate-700">
           These values are CAMS model estimates, not CPCB station measurements. CPCB measurements, when available, are shown separately below.
         </div>
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {/* 1. PM2.5 */}
           <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">PM2.5</span>
+              <span className="text-xs font-mono text-slate-500 uppercase font-semibold">PM2.5</span>
               <ProvenanceBadge kind="modeled" />
             </div>
             <div className="my-2">
               <span className="font-mono text-2xl font-bold text-rose-300 tabular-nums">
                 {data.current.pm2_5.value ?? '—'}
               </span>
-              <span className="text-xs font-mono text-[#86948a] ml-1">µg/m³</span>
+              <span className="text-xs font-mono text-slate-500 ml-1">µg/m³</span>
             </div>
             <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs font-mono">
-              <span className="text-[#bbcabf]">WHO Multiple:</span>
+              <span className="text-slate-600">WHO Multiple:</span>
               <span className="text-rose-400 font-bold">
                 {data.current.whoRatioPm25.value !== null ? `${data.current.whoRatioPm25.value}x` : '—'}
               </span>
@@ -121,17 +121,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           {/* 2. PM10 */}
           <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">PM10</span>
+              <span className="text-xs font-mono text-slate-500 uppercase font-semibold">PM10</span>
               <ProvenanceBadge kind="modeled" />
             </div>
             <div className="my-2">
               <span className="font-mono text-2xl font-bold text-purple-300 tabular-nums">
                 {data.current.pm10.value ?? '—'}
               </span>
-              <span className="text-xs font-mono text-[#86948a] ml-1">µg/m³</span>
+              <span className="text-xs font-mono text-slate-500 ml-1">µg/m³</span>
             </div>
             <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs font-mono">
-              <span className="text-[#bbcabf]">WHO Multiple:</span>
+              <span className="text-slate-600">WHO Multiple:</span>
               <span className="text-purple-300 font-bold">
                 {data.current.whoRatioPm10.value !== null ? `${data.current.whoRatioPm10.value}x` : '—'}
               </span>
@@ -141,17 +141,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           {/* 3. NO2 */}
           <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">NO₂</span>
+              <span className="text-xs font-mono text-slate-500 uppercase font-semibold">NO₂</span>
               <ProvenanceBadge kind="modeled" />
             </div>
             <div className="my-2">
               <span className="font-mono text-2xl font-bold text-emerald-300 tabular-nums">
                 {data.current.nitrogen_dioxide.value ?? '—'}
               </span>
-              <span className="text-xs font-mono text-[#86948a] ml-1">µg/m³</span>
+              <span className="text-xs font-mono text-slate-500 ml-1">µg/m³</span>
             </div>
             <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs font-mono">
-              <span className="text-[#bbcabf]">WHO Target:</span>
+              <span className="text-slate-600">WHO Target:</span>
               <span className="text-emerald-400 font-bold">25 µg/m³ (24h)</span>
             </div>
           </div>
@@ -159,17 +159,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           {/* 4. SO2 */}
           <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">SO₂</span>
+              <span className="text-xs font-mono text-slate-500 uppercase font-semibold">SO₂</span>
               <ProvenanceBadge kind="modeled" />
             </div>
             <div className="my-2">
               <span className="font-mono text-2xl font-bold text-emerald-300 tabular-nums">
                 {data.current.sulphur_dioxide.value ?? '—'}
               </span>
-              <span className="text-xs font-mono text-[#86948a] ml-1">µg/m³</span>
+              <span className="text-xs font-mono text-slate-500 ml-1">µg/m³</span>
             </div>
             <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs font-mono">
-              <span className="text-[#bbcabf]">WHO Target:</span>
+              <span className="text-slate-600">WHO Target:</span>
               <span className="text-emerald-400 font-bold">40 µg/m³ (24h)</span>
             </div>
           </div>
@@ -177,17 +177,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           {/* 5. Ozone O3 */}
           <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">Ozone O₃</span>
+              <span className="text-xs font-mono text-slate-500 uppercase font-semibold">Ozone O₃</span>
               <ProvenanceBadge kind="modeled" />
             </div>
             <div className="my-2">
               <span className="font-mono text-2xl font-bold text-amber-300 tabular-nums">
                 {data.current.ozone.value ?? '—'}
               </span>
-              <span className="text-xs font-mono text-[#86948a] ml-1">µg/m³</span>
+              <span className="text-xs font-mono text-slate-500 ml-1">µg/m³</span>
             </div>
             <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs font-mono">
-              <span className="text-[#bbcabf]">WHO 8h Target:</span>
+              <span className="text-slate-600">WHO 8h Target:</span>
               <span className="text-amber-400 font-bold">100 µg/m³</span>
             </div>
           </div>
@@ -195,17 +195,17 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           {/* 6. CO */}
           <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">Carbon CO</span>
+              <span className="text-xs font-mono text-slate-500 uppercase font-semibold">Carbon CO</span>
               <ProvenanceBadge kind="modeled" />
             </div>
             <div className="my-2">
               <span className="font-mono text-2xl font-bold text-cyan-300 tabular-nums">
                 {data.current.carbon_monoxide.value ?? '—'}
               </span>
-              <span className="text-xs font-mono text-[#86948a] ml-1">mg/m³</span>
+              <span className="text-xs font-mono text-slate-500 ml-1">mg/m³</span>
             </div>
             <div className="pt-2 border-t border-white/5 flex items-center justify-between text-xs font-mono">
-              <span className="text-[#bbcabf]">Converted from:</span>
+              <span className="text-slate-600">Converted from:</span>
               <span className="text-cyan-400 font-bold">µg ÷ 1000</span>
             </div>
           </div>

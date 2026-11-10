@@ -30,12 +30,12 @@ function formatTime(value: string | null): string {
 }
 
 function getHourlyEstimateCategory(value: number): { label: string; className: string } {
-  if (value <= 50) return { label: 'Good', className: 'text-emerald-300' };
-  if (value <= 100) return { label: 'Satisfactory', className: 'text-lime-300' };
-  if (value <= 200) return { label: 'Moderately polluted', className: 'text-amber-300' };
-  if (value <= 300) return { label: 'Poor', className: 'text-orange-300' };
-  if (value <= 400) return { label: 'Very poor', className: 'text-rose-300' };
-  return { label: 'Severe', className: 'text-red-300' };
+  if (value <= 50) return { label: 'Good', className: 'text-emerald-700' };
+  if (value <= 100) return { label: 'Satisfactory', className: 'text-lime-800' };
+  if (value <= 200) return { label: 'Moderately polluted', className: 'text-amber-800' };
+  if (value <= 300) return { label: 'Poor', className: 'text-orange-800' };
+  if (value <= 400) return { label: 'Very poor', className: 'text-rose-700' };
+  return { label: 'Severe', className: 'text-red-700' };
 }
 
 export function CpcbStationCard({ station, error }: CpcbStationCardProps) {
@@ -43,7 +43,7 @@ export function CpcbStationCard({ station, error }: CpcbStationCardProps) {
     return (
       <section className="data-card rounded-2xl p-5 sm:p-6">
         <div className="flex items-start gap-3">
-          <div className="rounded-xl bg-indigo-400/10 p-2.5 text-indigo-300">
+          <div className="rounded-xl bg-blue-50 p-2.5 text-blue-700">
             <Radio className="h-5 w-5" />
           </div>
           <div>
@@ -61,7 +61,7 @@ export function CpcbStationCard({ station, error }: CpcbStationCardProps) {
     return (
       <section className="data-card rounded-2xl p-5 sm:p-6" role="status">
         <div className="flex items-start gap-3">
-          <div className="rounded-xl bg-amber-400/10 p-2.5 text-amber-300">
+          <div className="rounded-xl bg-amber-50 p-2.5 text-amber-700">
             <AlertTriangle className="h-5 w-5" />
           </div>
           <div>
@@ -87,7 +87,7 @@ export function CpcbStationCard({ station, error }: CpcbStationCardProps) {
     <section className="data-card rounded-2xl p-5 sm:p-6" aria-labelledby="cpcb-heading">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="flex items-start gap-3">
-          <div className="rounded-xl bg-indigo-400/10 p-2.5 text-indigo-300">
+          <div className="rounded-xl bg-blue-50 p-2.5 text-blue-700">
             <Radio className="h-5 w-5" />
           </div>
           <div>
@@ -97,10 +97,10 @@ export function CpcbStationCard({ station, error }: CpcbStationCardProps) {
               </h2>
               <span className={`rounded-full px-2.5 py-1 text-[11px] font-medium ${
                 station.observedAt === null
-                  ? 'bg-slate-400/10 text-slate-300'
+                  ? 'bg-slate-100 text-slate-700'
                   : isRecent
-                    ? 'bg-emerald-400/10 text-emerald-300'
-                    : 'bg-amber-400/10 text-amber-300'
+                    ? 'bg-emerald-50 text-emerald-800'
+                    : 'bg-amber-50 text-amber-800'
               }`}>
                 {station.observedAt === null ? 'Timestamp unavailable' : isRecent ? 'Recent report' : 'Older report'}
               </span>
@@ -120,7 +120,7 @@ export function CpcbStationCard({ station, error }: CpcbStationCardProps) {
           href="https://www.data.gov.in/resource/real-time-air-quality-index-various-locations"
           target="_blank"
           rel="noreferrer"
-          className="text-xs font-medium text-indigo-300 underline decoration-indigo-300/40 underline-offset-4 hover:text-indigo-200"
+          className="text-xs font-medium text-blue-700 underline decoration-blue-300 underline-offset-4 hover:text-blue-900"
         >
           CPCB data via data.gov.in
         </a>
@@ -129,7 +129,7 @@ export function CpcbStationCard({ station, error }: CpcbStationCardProps) {
       {station.hourlyPmEstimate && (() => {
         const category = getHourlyEstimateCategory(station.hourlyPmEstimate.value);
         return (
-          <div className="mt-5 rounded-xl border border-amber-300/20 bg-amber-300/[0.06] p-4">
+          <div className="mt-5 rounded-xl border border-amber-200 bg-amber-50 p-4">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
               <p className="text-sm font-semibold text-slate-100">Experimental hourly PM estimate</p>
               <span className={`text-sm font-semibold ${category.className}`}>
@@ -141,7 +141,7 @@ export function CpcbStationCard({ station, error }: CpcbStationCardProps) {
               {station.hourlyPmEstimate.pm25SubIndex !== null && ` · PM2.5 ${station.hourlyPmEstimate.pm25SubIndex}`}
               {station.hourlyPmEstimate.pm10SubIndex !== null && ` · PM10 ${station.hourlyPmEstimate.pm10SubIndex}`}
             </p>
-            <p className="mt-2 text-xs leading-5 text-amber-100/70">
+            <p className="mt-2 text-xs leading-5 text-amber-900/80">
               This is an unofficial PM-only estimate from the reported hourly averages, not a CPCB AQI. The open-ended top-range interpolation uses app assumptions (PM2.5 250–500 and PM10 430–600 µg/m³). Official CPCB AQI needs the prescribed averaging periods and at least three eligible pollutants. The main AQI above remains separately sourced and is not replaced by this estimate.
             </p>
           </div>
@@ -152,7 +152,7 @@ export function CpcbStationCard({ station, error }: CpcbStationCardProps) {
         {station.pollutants.map((pollutant) => {
           const unit = pollutant.id === 'CO' ? 'mg/m³' : 'µg/m³';
           return (
-            <div key={pollutant.id} className="rounded-xl border border-white/[0.07] bg-slate-950/30 p-3">
+            <div key={pollutant.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3">
               <p className="text-xs font-medium text-slate-400">
                 {POLLUTANT_NAMES[pollutant.id] ?? pollutant.id}
               </p>

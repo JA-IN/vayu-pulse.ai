@@ -8,7 +8,7 @@
 
 ## 🌟 Key Highlights & Architecture
 
-- **Visual design**: A softened indigo, mint, and coral palette with collapsible sections to keep the dashboard readable while preserving optional detail.
+- **Visual design**: A bright sky-and-mint palette with coral accents, clear solid cards, and collapsible sections to keep the dashboard readable while preserving optional detail.
 - **Air-quality data**: Current, historical, and forecast values from the Open-Meteo Air Quality API (CAMS model output); weather from Open-Meteo Forecast API.
 - **AI assistance**: Optional server-side Google Gemini integration receives the selected location's available modeled context.
 - **Provenance**: Modeled data, forecasts, historical values, derived calculations, and guidance are labeled separately. Staleness is determined from the provider's observation timestamp.

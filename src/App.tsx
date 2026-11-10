@@ -89,7 +89,7 @@ export default function App() {
   const o3 = dataset?.current.ozone.value ?? null;
 
   return (
-    <div className="min-h-screen bg-surface-container-lowest text-slate-100 font-sans selection:bg-primary/30 selection:text-primary">
+    <div className="min-h-screen bg-bg-base text-on-surface font-sans selection:bg-primary/20 selection:text-primary">
       {/* Sticky Top Navigation & Search */}
       <TopBar
         currentCity={currentCity}
@@ -109,15 +109,15 @@ export default function App() {
       {/* Main Content Area */}
       <main className="mx-auto max-w-7xl space-y-6 px-4 pb-12 pt-6 sm:px-6 lg:px-8">
         {dataset?.stationError && (
-          <div className="rounded-xl border border-amber-300/20 bg-amber-400/[0.08] p-4 text-sm text-amber-100" role="status">
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900" role="status">
             WAQI station AQI is unavailable: {dataset.stationError}. The dashboard labels the source of the AQI currently shown.
           </div>
         )}
         {/* Error Notification Bar with Retry */}
         {error && (
-          <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-between text-rose-300">
+          <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-between text-rose-800">
             <div className="flex items-center gap-2.5">
-              <AlertTriangle className="w-5 h-5 text-rose-400 shrink-0" />
+              <AlertTriangle className="w-5 h-5 text-rose-600 shrink-0" />
               <div className="text-xs font-mono">
                 <span className="font-bold">Data Request Warning: </span>
                 <span>{error}</span>
@@ -125,7 +125,7 @@ export default function App() {
             </div>
             <button
               onClick={() => loadCityData(currentCity, true)}
-              className="px-3 py-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors"
+              className="px-3 py-1.5 rounded-lg bg-rose-100 hover:bg-rose-200 border border-rose-300 text-rose-900 text-xs font-mono font-bold flex items-center gap-1.5 transition-colors"
             >
               <RefreshCw className="w-3.5 h-3.5" />
               <span>Retry Connection</span>
@@ -140,7 +140,7 @@ export default function App() {
               <div className="w-16 h-16 rounded-full border-4 border-primary/20 border-t-primary animate-spin"></div>
               <Compass className="w-6 h-6 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
             </div>
-            <p className="animate-pulse text-sm text-slate-400">
+            <p className="animate-pulse text-sm text-slate-600">
               Loading air-quality data for {currentCity.name}…
             </p>
           </div>

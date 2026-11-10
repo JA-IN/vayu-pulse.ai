@@ -140,28 +140,28 @@ export const TopBar: React.FC<TopBarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#060e20]/85 backdrop-blur-2xl border-b border-white/10 shadow-lg no-print">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-200/80 bg-white/90 shadow-[0_8px_24px_-20px_rgba(23,32,51,0.5)] backdrop-blur-2xl no-print">
       <div className="max-w-[1720px] mx-auto min-h-20 px-4 py-3 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-4">
         {/* Brand & Identity */}
         <div className="order-1 flex items-center gap-3 shrink-0">
-          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500/20 via-emerald-400/10 to-transparent border border-emerald-500/30 shadow-[0_0_15px_rgba(78,222,163,0.25)]">
-            <span className="material-symbols-outlined text-emerald-400 text-[22px]">air</span>
+          <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-500/15 via-teal-400/10 to-white border border-blue-500/20 shadow-[0_8px_18px_-12px_rgba(37,99,235,0.6)]">
+            <span className="material-symbols-outlined text-blue-600 text-[22px]">air</span>
             <span className="absolute -top-1 -right-1 flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-400"></span>
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-500 opacity-50"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-teal-600"></span>
             </span>
           </div>
 
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <span className="font-display font-extrabold text-lg sm:text-xl text-white tracking-tight">
+              <span className="font-display font-extrabold text-lg sm:text-xl text-slate-900 tracking-tight">
                 VayuPulse AI
               </span>
-              <span className="hidden sm:inline-block px-2 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-widest uppercase bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+              <span className="hidden sm:inline-block px-2 py-0.5 rounded-full text-[9px] font-mono font-bold tracking-widest uppercase bg-teal-50 text-teal-800 border border-teal-200">
                 BREATHE BETTER
               </span>
             </div>
-            <span className="text-[11px] font-mono text-[#bbcabf] hidden md:inline">
+            <span className="text-[11px] font-mono text-slate-500 hidden md:inline">
               Atmospheric Intelligence • Lets Code Diwali 2026
             </span>
           </div>
@@ -173,7 +173,7 @@ export const TopBar: React.FC<TopBarProps> = ({
               className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-mono font-semibold transition-all border ${
                 diwaliSmogMode
                   ? 'bg-rose-950/40 border-rose-500/50 text-rose-300 shadow-[0_0_15px_rgba(244,63,94,0.3)]'
-                  : 'bg-[#171f33] border-white/10 text-[#bbcabf] hover:text-white'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:text-slate-900'
               }`}
               title="Add a Diwali-themed label to exported story cards"
             >
@@ -192,8 +192,8 @@ export const TopBar: React.FC<TopBarProps> = ({
 
         {/* Center Search Bar with Geocoding */}
         <div ref={searchContainerRef} className="relative order-3 w-full md:order-2 md:w-auto md:flex-1 md:max-w-xl md:mx-2">
-          <div className="relative flex items-center w-full bg-[#131b2e] border border-white/10 rounded-xl px-3 py-2 text-sm text-[#dae2fd] focus-within:border-emerald-400 focus-within:shadow-[0_0_16px_rgba(78,222,163,0.2)] transition-all">
-            <span className="material-symbols-outlined text-[#86948a] text-[18px] mr-2">search</span>
+          <div className="relative flex items-center w-full bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm text-slate-800 shadow-sm focus-within:border-blue-400 focus-within:shadow-[0_0_0_3px_rgba(37,99,235,0.12)] transition-all">
+            <span className="material-symbols-outlined text-slate-400 text-[18px] mr-2">search</span>
             <input
               id="city-search-input"
               type="text"
@@ -203,31 +203,31 @@ export const TopBar: React.FC<TopBarProps> = ({
                 if (searchQuery.trim().length >= 2) setShowDropdown(true);
               }}
               placeholder="Search global cities or monitoring zones..."
-              className="w-full bg-transparent focus:outline-none placeholder:text-[#86948a] text-sm font-sans"
+              className="w-full bg-transparent focus:outline-none placeholder:text-slate-400 text-sm font-sans"
             />
             {isSearching && (
-              <span className="material-symbols-outlined text-emerald-400 text-[18px] animate-spin mr-2">
+              <span className="material-symbols-outlined text-blue-600 text-[18px] animate-spin mr-2">
                 progress_activity
               </span>
             )}
-            <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-mono text-[#86948a] bg-[#222a3d] border border-white/10 rounded">
+            <kbd className="hidden lg:inline-block px-1.5 py-0.5 text-[10px] font-mono text-slate-500 bg-slate-50 border border-slate-200 rounded">
               ⌘K
             </kbd>
           </div>
 
           {/* Autocomplete Search Dropdown */}
           {showDropdown && (isSearching || searchError || searchResults.length > 0 || searchQuery.trim().length >= 2) && (
-            <div className="absolute top-full left-0 right-0 mt-2 bg-[#0f172a]/95 backdrop-blur-2xl border border-white/15 rounded-xl shadow-2xl overflow-hidden z-50">
-              <div className="p-2 border-b border-white/10 text-[10px] font-mono uppercase text-[#86948a]">
+            <div className="absolute top-full left-0 right-0 mt-2 bg-white/95 backdrop-blur-2xl border border-slate-200 rounded-xl shadow-xl overflow-hidden z-50">
+              <div className="p-2 border-b border-slate-100 text-[10px] font-mono uppercase text-slate-500">
                 Open-Meteo Geocoding Results
               </div>
               <div className="max-h-60 overflow-y-auto">
                 {searchError ? (
                   <p role="status" className="px-3 py-3 text-xs text-rose-300">{searchError}</p>
                 ) : isSearching ? (
-                  <p role="status" className="px-3 py-3 text-xs text-[#bbcabf]">Searching cities...</p>
+                  <p role="status" className="px-3 py-3 text-xs text-slate-600">Searching cities...</p>
                 ) : searchResults.length === 0 ? (
-                  <p role="status" className="px-3 py-3 text-xs text-[#bbcabf]">No matching cities found.</p>
+                  <p role="status" className="px-3 py-3 text-xs text-slate-600">No matching cities found.</p>
                 ) : null}
                 {searchResults.map((city, idx) => (
                   <button
@@ -237,16 +237,16 @@ export const TopBar: React.FC<TopBarProps> = ({
                       setSearchQuery('');
                       setShowDropdown(false);
                     }}
-                    className="w-full text-left px-3 py-2.5 hover:bg-[#222a3d] flex items-center justify-between text-sm transition-colors border-b border-white/5 last:border-b-0"
+                    className="w-full text-left px-3 py-2.5 hover:bg-blue-50 flex items-center justify-between text-sm transition-colors border-b border-slate-100 last:border-b-0"
                   >
                     <div>
-                      <span className="font-semibold text-white">{city.name}</span>
-                      <span className="text-xs text-[#86948a] ml-2">
+                      <span className="font-semibold text-slate-900">{city.name}</span>
+                      <span className="text-xs text-slate-500 ml-2">
                         {city.admin1 ? `${city.admin1}, ` : ''}
                         {city.country}
                       </span>
                     </div>
-                    <span className="text-xs font-mono text-emerald-400">
+                    <span className="text-xs font-mono text-teal-700">
                       {city.latitude.toFixed(2)}°, {city.longitude.toFixed(2)}°
                     </span>
                   </button>
@@ -262,7 +262,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           <button
             onClick={handleDetectLocation}
             disabled={geoLocating}
-            className="flex min-h-10 items-center gap-2 px-2.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-[10px] sm:text-xs font-mono font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+            className="flex min-h-10 items-center gap-2 px-2.5 py-1.5 rounded-lg bg-teal-50 hover:bg-teal-100 border border-teal-200 text-teal-800 text-[10px] sm:text-xs font-mono font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
             title="Check current location using your device GPS"
             aria-label="Check current location using your device GPS"
           >
@@ -275,7 +275,7 @@ export const TopBar: React.FC<TopBarProps> = ({
                 near_me
               </span>
               {!geoLocating && (
-                <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-emerald-300 ring-2 ring-[#171f33]" />
+                <span className="absolute -right-0.5 -top-0.5 h-2 w-2 rounded-full bg-teal-500 ring-2 ring-white" />
               )}
             </span>
             <span className="max-w-[76px] text-left leading-tight">
@@ -288,20 +288,20 @@ export const TopBar: React.FC<TopBarProps> = ({
           </button>
 
           {/* Data Status Pill */}
-          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#131b2e] border border-white/10 text-xs font-mono">
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white border border-slate-200 text-xs font-mono shadow-sm">
             <span
               className={`w-2 h-2 rounded-full ${
                 !observedAt ? 'bg-slate-500' : isStale ? 'bg-amber-400' : 'bg-emerald-400'
               }`}
             ></span>
             <ProvenanceBadge kind={hasStationData ? 'station' : 'modeled'} stale={isStale} />
-            <span className="text-[#86948a] border-l border-white/10 pl-2">
+            <span className="text-slate-500 border-l border-slate-200 pl-2">
               {formatObservedTime(observedAt)}
             </span>
             <button
               onClick={onRefresh}
               disabled={isRefreshing}
-              className="hover:text-emerald-400 text-[#86948a] transition-colors ml-1"
+              className="hover:text-blue-600 text-slate-500 transition-colors ml-1"
               title="Refresh telemetry"
             >
               <span
@@ -317,7 +317,7 @@ export const TopBar: React.FC<TopBarProps> = ({
           {/* Smart Alerts Trigger */}
           <button
             onClick={onOpenAlerts}
-            className="relative p-2 rounded-lg bg-[#171f33] hover:bg-[#222a3d] border border-white/10 text-[#dae2fd] transition-colors"
+            className="relative p-2 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-700 transition-colors"
             title="Configure Smart AQI Threshold Alerts"
           >
             <span className="material-symbols-outlined text-[20px]">notifications</span>
@@ -327,17 +327,17 @@ export const TopBar: React.FC<TopBarProps> = ({
           {/* Story Card Modal Trigger */}
           <button
             onClick={onOpenShareCard}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[#171f33] hover:bg-[#222a3d] border border-white/10 text-[#dae2fd] text-xs font-medium transition-colors"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white hover:bg-blue-50 border border-slate-200 text-slate-700 text-xs font-medium transition-colors"
             title="Export Social Media Story Cards (9:16 / 1:1 / 16:9)"
           >
-            <span className="material-symbols-outlined text-[16px] text-purple-300">ios_share</span>
+            <span className="material-symbols-outlined text-[16px] text-blue-600">ios_share</span>
             <span className="hidden sm:inline">Share Card</span>
           </button>
 
           {/* Audit Report Trigger */}
           <button
             onClick={onOpenAuditReport}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/30 text-emerald-300 text-xs font-mono font-semibold transition-all"
+            className="button-gradient flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-mono font-semibold transition-all shadow-sm"
             title="View & Print Official Environmental Audit Report"
           >
             <span className="material-symbols-outlined text-[16px]">print</span>
@@ -347,9 +347,9 @@ export const TopBar: React.FC<TopBarProps> = ({
       </div>
 
       {/* Quick City Presets Strip */}
-      <div className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-2 border-t border-white/5 flex items-center justify-between text-xs overflow-x-auto scrollbar-none gap-3">
-        <div className="flex items-center gap-2 shrink-0 text-[#86948a] font-mono text-[11px] uppercase">
-          <span className="material-symbols-outlined text-[14px] text-emerald-400">explore</span>
+      <div className="max-w-[1720px] mx-auto px-4 sm:px-6 lg:px-8 py-2 border-t border-slate-100 flex items-center justify-between text-xs overflow-x-auto scrollbar-none gap-3">
+        <div className="flex items-center gap-2 shrink-0 text-slate-500 font-mono text-[11px] uppercase">
+          <span className="material-symbols-outlined text-[14px] text-teal-700">explore</span>
           <span>Quick Monitoring Zones:</span>
         </div>
         <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
@@ -364,8 +364,8 @@ export const TopBar: React.FC<TopBarProps> = ({
                 onClick={() => onSelectCity(city)}
                 className={`px-2.5 py-1 rounded-full text-xs font-mono transition-all shrink-0 ${
                   isSelected
-                    ? 'bg-emerald-500 text-[#003824] font-bold shadow-[0_0_12px_rgba(78,222,163,0.3)]'
-                    : 'bg-[#131b2e] hover:bg-[#222a3d] text-[#bbcabf] border border-white/5'
+                    ? 'bg-gradient-to-r from-blue-600 to-teal-700 text-white font-bold shadow-[0_6px_14px_-8px_rgba(37,99,235,0.7)]'
+                    : 'bg-slate-50 hover:bg-blue-50 text-slate-600 border border-slate-200'
                 }`}
               >
                 {city.name}
