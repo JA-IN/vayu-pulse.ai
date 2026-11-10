@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { RefreshCw, AlertTriangle, Compass, Bot } from 'lucide-react';
+import { RefreshCw, AlertTriangle, Compass } from 'lucide-react';
 import { TopBar } from './components/TopBar.tsx';
 import { HeroSection } from './components/HeroSection.tsx';
 import { AirQualityMap } from './components/AirQualityMap.tsx';
@@ -17,6 +17,7 @@ import { StoryCardModal } from './components/StoryCardModal.tsx';
 import { SmartAlertsModal } from './components/SmartAlertsModal.tsx';
 import { AuditReportModal } from './components/AuditReportModal.tsx';
 import { Footer } from './components/Footer.tsx';
+import { CpcbStationCard } from './components/CpcbStationCard.tsx';
 import {
   CityLocation,
   PRESET_CITIES,
@@ -38,7 +39,7 @@ export default function App() {
   const [storyModalOpen, setStoryModalOpen] = useState<boolean>(false);
   const [alertsModalOpen, setAlertsModalOpen] = useState<boolean>(false);
   const [auditModalOpen, setAuditModalOpen] = useState<boolean>(false);
-  const [copilotOpen, setCopilotOpen] = useState<boolean>(true);
+  const [copilotOpen, setCopilotOpen] = useState<boolean>(false);
 
   // User detected coordinates (if geolocation active)
   const [userCoords, setUserCoords] = useState<{ lat?: number; lon?: number }>({});
@@ -106,10 +107,10 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-12 space-y-10">
+      <main className="mx-auto max-w-7xl space-y-6 px-4 pb-12 pt-6 sm:px-6 lg:px-8">
         {dataset?.stationError && (
-          <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-200 text-xs font-mono">
-            WAQI station data is unavailable ({dataset.stationError}). Showing the Open-Meteo CAMS modeled AQI instead.
+          <div className="rounded-xl border border-amber-300/20 bg-amber-400/[0.08] p-4 text-sm text-amber-100" role="status">
+            WAQI station AQI is unavailable: {dataset.stationError}. The dashboard labels the source of the AQI currently shown.
           </div>
         )}
         {/* Error Notification Bar with Retry */}
@@ -139,8 +140,8 @@ export default function App() {
               <div className="w-16 h-16 rounded-full border-4 border-primary/20 border-t-primary animate-spin"></div>
               <Compass className="w-6 h-6 text-primary absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
             </div>
-            <p className="text-sm font-mono text-muted animate-pulse">
-              Calibrating ECMWF &amp; CAMS Atmospheric Telemetry for {currentCity.name}...
+            <p className="animate-pulse text-sm text-slate-400">
+              Loading air-quality data for {currentCity.name}…
             </p>
           </div>
         ) : dataset && (
@@ -151,81 +152,106 @@ export default function App() {
               diwaliSmogMode={diwaliSmogMode}
             />
 
-            {/* SECTION 2: INTERACTIVE GEOSPATIAL RADAR & CLEAN AIR VECTOR (Requirement B) */}
-            <AirQualityMap
-              currentCity={currentCity}
-              onSelectCity={handleSelectCity}
-              userLat={userCoords.lat}
-              userLon={userCoords.lon}
-            />
+            {currentCity.country.toLowerCase() === 'india' && (
+              <CpcbStationCard station={dataset.cpcbData} error={dataset.cpcbError} />
+            )}
 
-            {/* SECTION 3: 2-COLUMN GRID (Historical Dispersion + 72-Hour Prognostics) */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Requirement C: Historical Pollution Tracker & 2-Date Comparison */}
-              <HistoricalTracker
-                historicalData={dataset.historicalHours}
-                cityName={currentCity.name}
+            <section className="data-card rounded-2xl p-4 sm:p-6">
+              <div className="mb-4">
+                <p className="section-eyebrow">Explore</p>
+                <h2 className="mt-1 text-xl font-semibold text-slate-100">Air quality map</h2>
+                <p className="mt-1 text-sm text-slate-400">Browse modeled city points and nearby locations.</p>
+              </div>
+              <AirQualityMap
+                currentCity={currentCity}
+                onSelectCity={handleSelectCity}
+                userLat={userCoords.lat}
+                userLon={userCoords.lon}
               />
+            </section>
 
-              {/* Requirement F: 72-Hour Prognostics & Safe Outdoor Window */}
-              <ForecastSection
-                data={dataset}
-                alertThreshold={150}
-              />
-            </div>
+            <details className="disclosure-card group">
+              <summary>
+                <span>
+                  <span className="section-eyebrow">Trends</span>
+                  <span className="mt-1 block text-base font-semibold text-slate-100">History &amp; forecast</span>
+                  <span className="mt-1 block text-sm font-normal text-slate-400">Explore past readings, model projections, and outdoor windows.</span>
+                </span>
+                <span className="disclosure-icon" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
+                <HistoricalTracker
+                  historicalData={dataset.historicalHours}
+                  cityName={currentCity.name}
+                />
+                <ForecastSection data={dataset} alertThreshold={150} />
+              </div>
+            </details>
 
-            {/* SECTION 4: 2-COLUMN GRID (Multi-City Battle + Persona Protocol Engine) */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Requirement D: Comparative City Analytics & Global Leaderboard */}
+            <details className="disclosure-card group">
+              <summary>
+                <span>
+                  <span className="section-eyebrow">Compare</span>
+                  <span className="mt-1 block text-base font-semibold text-slate-100">Compare cities</span>
+                  <span className="mt-1 block text-sm font-normal text-slate-400">Compare available AQI and modeled pollutant values.</span>
+                </span>
+                <span className="disclosure-icon" aria-hidden="true">+</span>
+              </summary>
               <CityBattle
                 initialCity={currentCity}
                 onSelectActiveCity={handleSelectCity}
               />
+            </details>
 
-              {/* Requirement E: Physiological Countermeasures & Persona Health Engine */}
-              <HealthSafetySection
-                currentAqi={rawAqi}
-              />
-            </div>
-
-            {/* SECTION 5: AI AQI COPILOT (Bonus feature) */}
-            <div id="vayu-copilot-section" className="pt-4">
-              <VayuCopilot
-                currentCity={currentCity.name}
-                country={currentCity.country}
-                coordinates={{ lat: currentCity.latitude, lon: currentCity.longitude }}
-                aqi={rawAqi}
-                pm25={pm25}
-                pm10={pm10}
-                no2={no2}
-                so2={so2}
-                co={co}
-                o3={o3}
-                windSpeed={dataset.wind.speed}
-                windDirection={dataset.wind.direction}
-                humidity={dataset.wind.humidity}
-                observedAt={dataset.observedAt}
-                isStale={dataset.isStale}
-                source={dataset.source}
-                safeWindow={safeWindowLabel}
-                isOpen={copilotOpen}
-                onClose={() => setCopilotOpen(false)}
-              />
-            </div>
+            <details
+              className="disclosure-card group"
+              onToggle={(event) => setCopilotOpen(event.currentTarget.open)}
+            >
+              <summary>
+                <span>
+                  <span className="section-eyebrow">Guidance</span>
+                  <span className="mt-1 block text-base font-semibold text-slate-100">Health guidance &amp; AI assistant</span>
+                  <span className="mt-1 block text-sm font-normal text-slate-400">Personalized precautions and answers based on available data.</span>
+                </span>
+                <span className="disclosure-icon" aria-hidden="true">+</span>
+              </summary>
+              <div className="mt-5 space-y-5">
+                <HealthSafetySection currentAqi={rawAqi} />
+                {copilotOpen ? (
+                  <VayuCopilot
+                    currentCity={currentCity.name}
+                    country={currentCity.country}
+                    coordinates={{ lat: currentCity.latitude, lon: currentCity.longitude }}
+                    aqi={rawAqi}
+                    pm25={pm25}
+                    pm10={pm10}
+                    no2={no2}
+                    so2={so2}
+                    co={co}
+                    o3={o3}
+                    windSpeed={dataset.wind.speed}
+                    windDirection={dataset.wind.direction}
+                    humidity={dataset.wind.humidity}
+                    observedAt={dataset.observedAt}
+                    isStale={dataset.isStale}
+                    source={dataset.source}
+                    safeWindow={safeWindowLabel}
+                    isOpen
+                    onClose={() => setCopilotOpen(false)}
+                  />
+                ) : (
+                  <button
+                    onClick={() => setCopilotOpen(true)}
+                    className="rounded-xl border border-indigo-300/20 bg-indigo-400/[0.08] px-4 py-3 text-sm font-medium text-indigo-200 transition hover:bg-indigo-400/[0.14]"
+                  >
+                    Open VayuAI assistant
+                  </button>
+                )}
+              </div>
+            </details>
           </>
         )}
       </main>
-
-      {/* Floating Action Pill if Copilot is minimized */}
-      {!copilotOpen && (
-        <button
-          onClick={() => setCopilotOpen(true)}
-          className="fixed bottom-6 right-6 z-40 px-4 py-3 rounded-full bg-primary text-surface-container-lowest font-display font-bold text-xs flex items-center gap-2 shadow-2xl hover:scale-105 transition-transform"
-        >
-          <Bot className="w-4 h-4 animate-bounce" />
-          <span>Ask VayuAI Copilot</span>
-        </button>
-      )}
 
       {/* FOOTER */}
       <Footer

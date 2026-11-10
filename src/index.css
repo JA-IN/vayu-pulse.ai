@@ -1,28 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --color-surface: #0b1326;
-  --color-surface-dim: #0b1326;
-  --color-surface-bright: #31394d;
-  --color-surface-lowest: #060e20;
-  --color-surface-low: #131b2e;
-  --color-surface-card: #171f33;
-  --color-surface-high: #222a3d;
-  --color-surface-highest: #2d3449;
-  --color-on-surface: #dae2fd;
-  --color-on-surface-variant: #bbcabf;
-  --color-primary: #4edea3;
-  --color-primary-container: #10b981;
-  --color-on-primary: #003824;
-  --color-secondary: #d0bcff;
-  --color-secondary-container: #571bc1;
-  --color-tertiary: #ffb2b7;
-  --color-tertiary-container: #ff7886;
+  --color-surface: #101629;
+  --color-surface-dim: #0b1020;
+  --color-surface-bright: #303a56;
+  --color-surface-lowest: #080d1a;
+  --color-surface-low: #151d32;
+  --color-surface-card: #19233a;
+  --color-surface-high: #222d46;
+  --color-surface-highest: #2d3854;
+  --color-on-surface: #eef0ff;
+  --color-on-surface-variant: #b6bfd5;
+  --color-primary: #84e2c1;
+  --color-primary-container: #3fb891;
+  --color-on-primary: #062b24;
+  --color-secondary: #b8c5ff;
+  --color-secondary-container: #5366b3;
+  --color-tertiary: #ffb7a9;
+  --color-tertiary-container: #d7796d;
   --color-error: #ffb4ab;
   --color-error-container: #93000a;
-  --color-outline: #86948a;
-  --color-outline-variant: #3c4a42;
-  --color-bg-base: #020617;
+  --color-outline: #9aa8c2;
+  --color-outline-variant: #3b4660;
+  --color-bg-base: #080d1a;
 
   --font-display: "Plus Jakarta Sans", sans-serif;
   --font-body: "Inter", sans-serif;
@@ -34,26 +34,97 @@
     border-color: rgba(255, 255, 255, 0.08);
   }
   body {
-    background-color: #020617;
-    color: #dae2fd;
+    background:
+      radial-gradient(ellipse at 14% 0%, rgba(108, 126, 220, 0.11), transparent 38rem),
+      radial-gradient(ellipse at 92% 18%, rgba(78, 196, 158, 0.07), transparent 34rem),
+      #080d1a;
+    color: #eef0ff;
     font-family: var(--font-body);
     overflow-x: hidden;
+    min-height: 100vh;
   }
 }
 
 /* Glassmorphism styling tokens */
 .glass-panel {
-  background-color: rgba(11, 17, 32, 0.72);
-  backdrop-filter: blur(20px) saturate(180%);
+  background-color: rgba(19, 27, 47, 0.78);
+  backdrop-filter: blur(20px) saturate(150%);
   border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.12), 0 20px 40px -15px rgba(0, 0, 0, 0.7);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.08), 0 20px 40px -15px rgba(0, 0, 0, 0.38);
 }
 
 .glass-panel-elevated {
-  background-color: rgba(15, 23, 42, 0.85);
-  backdrop-filter: blur(28px) saturate(190%);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.16), 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  background-color: rgba(24, 34, 57, 0.92);
+  backdrop-filter: blur(24px) saturate(155%);
+  border: 1px solid rgba(184, 197, 255, 0.13);
+  box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.1), 0 25px 50px -12px rgba(0, 0, 0, 0.46);
+}
+
+.data-card {
+  border: 1px solid rgba(184, 197, 255, 0.11);
+  background: linear-gradient(145deg, rgba(25, 35, 58, 0.9), rgba(15, 22, 39, 0.94));
+  box-shadow: 0 18px 48px -36px rgba(0, 0, 0, 0.8);
+}
+
+.disclosure-card {
+  overflow: hidden;
+  border: 1px solid rgba(184, 197, 255, 0.12);
+  border-radius: 1rem;
+  background: rgba(19, 27, 47, 0.72);
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.disclosure-card:hover,
+.disclosure-card[open] {
+  border-color: rgba(184, 197, 255, 0.24);
+  background: rgba(22, 31, 53, 0.88);
+}
+
+.disclosure-card > summary {
+  display: flex;
+  min-height: 5rem;
+  cursor: pointer;
+  list-style: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.125rem;
+}
+
+.disclosure-card > summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure-card > summary:focus-visible {
+  outline: 2px solid rgba(184, 197, 255, 0.8);
+  outline-offset: -3px;
+  border-radius: 1rem;
+}
+
+.disclosure-icon {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  flex: none;
+  place-items: center;
+  border: 1px solid rgba(184, 197, 255, 0.18);
+  border-radius: 9999px;
+  color: #c4ceff;
+  transition: transform 180ms ease;
+}
+
+.disclosure-card[open] .disclosure-icon {
+  transform: rotate(45deg);
+}
+
+.section-eyebrow {
+  display: block;
+  color: #aebeff;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  line-height: 1rem;
+  text-transform: uppercase;
 }
 
 .tabular-nums {

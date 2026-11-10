@@ -2,13 +2,13 @@
 
 > **Built for Lets Code Diwali Challenge 2026** • **Theme:** BREATHE BETTER • **License:** MIT
 
-**VayuPulse AI** displays nearby WAQI station AQI readings when available, with clearly labeled Open-Meteo CAMS modeled AQI as a fallback. Pollutant concentrations, history, and forecasts use modeled data, not local ground-monitor measurements; the dashboard identifies the source and timestamp.
+**VayuPulse AI** displays nearby WAQI station AQI readings when available, with clearly labeled Open-Meteo CAMS modeled AQI as a fallback. For Indian cities, it also shows nearby CPCB station pollutant concentrations and a separately labeled experimental hourly PM-only estimate when the readings are available. The estimate is not an official CPCB AQI: the feed's latest hourly values do not provide the prescribed averaging periods or the minimum three eligible pollutant sub-indices. WAQI remains the primary station AQI when available; the experimental estimate is never substituted for or combined with it. History and forecasts use modeled data, and each reading identifies its source and timestamp.
 
 ---
 
 ## 🌟 Key Highlights & Architecture
 
-- **Living Glassmorphism & Obsidian Canvas**: Calibrated visual hierarchy based on `#020617` / `#0b1326` with dynamic ambient glows reflecting US-AQI severity.
+- **Visual design**: A softened indigo, mint, and coral palette with collapsible sections to keep the dashboard readable while preserving optional detail.
 - **Air-quality data**: Current, historical, and forecast values from the Open-Meteo Air Quality API (CAMS model output); weather from Open-Meteo Forecast API.
 - **AI assistance**: Optional server-side Google Gemini integration receives the selected location's available modeled context.
 - **Provenance**: Modeled data, forecasts, historical values, derived calculations, and guidance are labeled separately. Staleness is determined from the provider's observation timestamp.
@@ -99,7 +99,8 @@
 | **Icons & Animation** | Lucide React, Motion (Framer Motion) |
 | **Mapping & Geospatial** | Leaflet, CARTO Dark Matter Tiles |
 | **Social Card Export** | `html-to-image` (Canvas PNG rendering) |
-| **Backend & Proxy** | Node.js, Express, `tsx` |
+| **Hosting** | Static Vite single-page app plus same-project Vercel API functions; no server-side rendering |
+| **Local API development** | Node.js, Express, `tsx` |
 | **AI Cognition** | `@google/genai` (model configured in `server.ts`) |
 | **Unit Testing** | `node:test`, `node:assert/strict` |
 
@@ -117,10 +118,14 @@
    - Endpoint: `https://geocoding-api.open-meteo.com/v1/search`
    - Data: Fast city and coordinate resolution.
 4. **World Air Quality Index (WAQI)**
-   - A server proxy and client helper are present, but are not currently called by the app's displayed-data flow.
+   - Station AQI for nearby monitors when available. Accessed via a same-project function so the token stays server-side.
 5. **Google Gemini API**
    - Model: configured in `server.ts`
    - Role: Fast, nuanced atmospheric cognition and conversational guidance.
+6. **CPCB real-time station data via data.gov.in**
+   - Resource: [Real time Air Quality Index from various locations](https://www.data.gov.in/resource/real-time-air-quality-index-various-locations)
+   - Data: Hourly station pollutant concentrations for Indian cities. The dashboard may show an experimental PM2.5/PM10-only estimate using breakpoint interpolation, clearly separated from the primary AQI. It is not an official CPCB AQI: the single-hour values, app-assumed endpoints for open-ended severe ranges, and two-pollutant subset do not satisfy the official averaging and pollutant requirements.
+   - Caching: successful station responses are cached for 30 minutes, with a stale-while-revalidate window on Vercel to reduce upstream requests and rate-limit pressure.
 
 ---
 
@@ -154,15 +159,15 @@ npm install
 ```
 
 ### 2. Environment Configuration
-Copy `.env.example` to `.env` (optional for local testing; Open-Meteo requires no API key):
+Copy `.env.example` to `.env`. Open-Meteo requires no API key; credentials are needed only for optional station and AI features:
 ```bash
-# In AI Studio, GEMINI_API_KEY is injected automatically
 GEMINI_API_KEY="your-gemini-key"
 WAQI_TOKEN="your-waqi-token"
+DATA_GOV_IN_API_KEY="your-data-gov-in-key"
 ```
 
 ### Deploying to Vercel
-Deploy this repository as a single Vercel project. Vercel builds the Vite frontend and deploys the `api/` handlers as same-project serverless functions; no second service or separate deployment is required. Add `WAQI_TOKEN` and, if using AI features, `GEMINI_API_KEY` as Vercel project environment variables (Production and Preview as needed). Do not use a `VITE_` prefix: browser-prefixed variables are embedded in public assets. WAQI data is requested without server-side caching. If WAQI has no nearby station or is unavailable, the dashboard falls back to clearly labeled Open-Meteo CAMS modeled data.
+Deploy this repository as a single Vercel project. The frontend is a static Vite single-page application rendered in the browser; this project does not use server-side rendering. Vercel also deploys the `api/` handlers as same-project serverless functions, which keep WAQI, CPCB, and Gemini credentials off the client. No second service or separate deployment is required. Set `WAQI_TOKEN`, `DATA_GOV_IN_API_KEY`, and (if using AI features) `GEMINI_API_KEY` in Vercel Project Settings for the required environments. Never use a `VITE_` prefix for secrets: those values are embedded in public assets. If a station API is unavailable, the AQI remains clearly attributed to the fallback source when available.
 
 ### 3. Run Unit Tests
 ```bash

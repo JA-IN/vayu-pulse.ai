@@ -3,7 +3,6 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useEffect, useState } from 'react';
 import { AirQualityDataset } from '../lib/api/openMeteo.ts';
 import { getAqiCategory } from '../lib/aqi.ts';
 import { ProvenanceBadge } from './ProvenanceBadge.tsx';
@@ -20,87 +19,61 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
   const isStationReading = data.current.us_aqi.kind === 'station';
   const category = getAqiCategory(aqiVal);
 
-  // Animated count-up for the big AQI number
-  const [displayedAqi, setDisplayedAqi] = useState(0);
-
-  useEffect(() => {
-    if (aqiVal === null) return;
-    let start = 0;
-    const end = aqiVal;
-    if (start === end) return;
-    const duration = 800; // ms
-    const increment = Math.max(1, Math.round(end / 40));
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= end) {
-        setDisplayedAqi(end);
-        clearInterval(timer);
-      } else {
-        setDisplayedAqi(start);
-      }
-    }, duration / 40);
-
-    return () => clearInterval(timer);
-  }, [aqiVal]);
-
   return (
-    <section className="relative space-y-6">
-      {/* Dynamic Ambient Aurora Volumetric Glow Blobs */}
-      <div className="pointer-events-none absolute -top-24 left-0 md:left-1/4 w-[600px] max-w-[calc(100vw-2rem)] h-[400px] rounded-full blur-[140px] opacity-25 transition-all duration-1000 -z-10"
-        style={{ backgroundColor: category.color }}
-      ></div>
+    <section className="relative space-y-4">
+      <div className="pointer-events-none absolute -top-16 left-0 h-56 w-full rounded-full bg-indigo-400/10 blur-3xl" />
 
-      {/* Current AQI source and observation status */}
-      <div className="flex flex-wrap items-center justify-between gap-3 bg-[#060e20]/60 backdrop-blur-xl px-4 py-2.5 rounded-xl border border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2">
-            <span
-              className="w-2.5 h-2.5 rounded-full animate-ping"
-              style={{ backgroundColor: category.color }}
-            ></span>
-            <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
-              ATMOSPHERIC STATUS:
-            </span>
-            <span
-              className="text-xs font-mono font-extrabold uppercase px-2 py-0.5 rounded-full"
-              style={{ backgroundColor: category.bgTint, color: category.textColor }}
-            >
-              {category.label} (AQI {aqiVal ?? '—'})
+      <div className="data-card relative grid gap-5 overflow-hidden rounded-3xl p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8">
+        <div className="pointer-events-none absolute -right-20 -top-28 h-64 w-64 rounded-full blur-3xl opacity-15" style={{ backgroundColor: category.color }} />
+        <div className="relative">
+          <p className="section-eyebrow">Current air quality</p>
+          <h1 className="mt-2 font-display text-3xl font-semibold tracking-tight text-slate-50 sm:text-4xl">
+            {data.city.name}
+          </h1>
+          <p className="mt-2 text-sm text-slate-400">
+            {data.city.country} <span className="mx-1.5 text-slate-600">·</span>
+            {data.city.latitude.toFixed(3)}, {data.city.longitude.toFixed(3)}
+          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <ProvenanceBadge
+              kind={isStationReading ? 'station' : 'modeled'}
+              stale={data.isStale}
+              sourceNote={isStationReading ? data.stationData?.aqi.source : 'Open-Meteo CAMS'}
+            />
+            <span className="text-xs text-slate-400">
+              Observed {data.observedAt ? new Date(data.observedAt).toLocaleString() : 'time unavailable'}
             </span>
           </div>
-
-          <span className="hidden md:inline text-white/20">•</span>
-
-          <div className="hidden md:flex items-center gap-2 text-xs font-mono text-[#bbcabf]">
-            <span>COORDINATES: <strong className="text-white">{data.city.latitude.toFixed(4)}° N, {data.city.longitude.toFixed(4)}° E</strong></span>
-            {data.city.elevation && (
-              <>
-                <span className="text-white/20">•</span>
-                <span>ELEV: <strong className="text-white">{data.city.elevation}m MSL</strong></span>
-              </>
-            )}
-          </div>
+          {data.stationData && data.stationData.attributions.length > 0 && (
+            <p className="mt-2 text-xs text-slate-500">
+              WAQI attribution: {data.stationData.attributions.join(', ')}
+            </p>
+          )}
         </div>
 
-        <div className="flex items-center gap-2 text-xs font-mono text-[#86948a]">
-          <span>Observed: <strong className="text-white">{data.observedAt || 'Unavailable'}</strong></span>
-          <ProvenanceBadge
-            kind={isStationReading ? 'station' : 'modeled'}
-            stale={data.isStale}
-            sourceNote={isStationReading ? data.stationData?.aqi.source : 'Open-Meteo CAMS'}
-          />
-        </div>
-        {data.stationData && data.stationData.attributions.length > 0 && (
-          <div className="w-full text-[10px] font-mono text-[#86948a]">
-            WAQI station attribution: {data.stationData.attributions.join(', ')}
+        <div className="relative flex items-center gap-4 rounded-2xl border border-white/[0.08] bg-slate-950/25 p-4 sm:min-w-56">
+          <span className="font-display text-5xl font-semibold leading-none tabular-nums text-slate-50 sm:text-6xl">
+            {aqiVal ?? '—'}
+          </span>
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">AQI</p>
+            <p className="mt-1 text-sm font-semibold" style={{ color: category.color }}>
+              {aqiVal === null ? 'Unavailable' : category.label}
+            </p>
           </div>
-        )}
+        </div>
       </div>
 
-      {/* Two Column Signature Row: Biosphere Eco-Mood + 3D Telemetry Cube */}
-      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-stretch">
-        {/* Left Column (Span 6): Biosphere Eco-Mood Converter */}
-        <div className="xl:col-span-6 flex flex-col justify-between">
+      <details className="disclosure-card group">
+        <summary>
+          <span>
+            <span className="section-eyebrow">Visualizations</span>
+            <span className="mt-1 block text-base font-semibold text-slate-100">3D cube &amp; air-quality illustrations</span>
+            <span className="mt-1 block text-sm font-normal text-slate-400">Optional interactive views based on the displayed AQI.</span>
+          </span>
+          <span className="disclosure-icon" aria-hidden="true">+</span>
+        </summary>
+        <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-2">
           <BiosphereMoodConverter
             currentAqi={aqiVal}
             pm25={data.current.pm2_5.value}
@@ -108,41 +81,25 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
             observedAt={data.observedAt}
             diwaliSmogMode={diwaliSmogMode}
           />
-        </div>
-
-        {/* Right Column (Span 6): 3D Telemetry Cube */}
-        <div className="xl:col-span-6 flex flex-col justify-between">
           <TelemetryCube data={data} />
         </div>
-      </div>
+      </details>
 
-      {/* 6-Pollutant Speciation Grid with WHO Multiples and Badges */}
-      <div className="glass-panel rounded-2xl p-5 sm:p-6 space-y-4">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/5 pb-3">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="material-symbols-outlined text-purple-300 text-[20px]">
-                blur_on
-              </span>
-              <span className="text-xs font-mono font-bold uppercase tracking-wider text-[#bbcabf]">
-                Chemical Speciation &amp; WHO Guideline Ratios
-              </span>
-              <ProvenanceBadge kind="modeled" />
-            </div>
-            <p className="text-xs text-[#86948a] mt-0.5">
-              Ground-level and tropospheric concentrations calibrated against World Health Organization 2021 air quality targets.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-2 text-xs font-mono text-[#86948a]">
-            <span>Primary Toxicity Driver: <strong className="text-rose-400">PM2.5 Core</strong></span>
-          </div>
+      <details className="disclosure-card group">
+        <summary>
+          <span>
+            <span className="section-eyebrow">Modeled data</span>
+            <span className="mt-1 block text-base font-semibold text-slate-100">Pollutant estimates &amp; health references</span>
+            <span className="mt-1 block text-sm font-normal text-slate-400">Open-Meteo CAMS concentrations and guideline comparisons.</span>
+          </span>
+          <span className="disclosure-icon" aria-hidden="true">+</span>
+        </summary>
+        <div className="mt-5 rounded-2xl border border-indigo-300/15 bg-indigo-400/[0.06] p-4 text-xs leading-5 text-indigo-100/80">
+          These values are CAMS model estimates, not CPCB station measurements. CPCB measurements, when available, are shown separately below.
         </div>
-
-        {/* 6 Tiles Grid */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
           {/* 1. PM2.5 */}
-          <div className="p-3.5 rounded-xl bg-[#131b2e] border border-white/10 flex flex-col justify-between hover:border-white/20 transition-all">
+          <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">PM2.5</span>
               <ProvenanceBadge kind="modeled" />
@@ -162,7 +119,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           </div>
 
           {/* 2. PM10 */}
-          <div className="p-3.5 rounded-xl bg-[#131b2e] border border-white/10 flex flex-col justify-between hover:border-white/20 transition-all">
+          <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">PM10</span>
               <ProvenanceBadge kind="modeled" />
@@ -182,7 +139,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           </div>
 
           {/* 3. NO2 */}
-          <div className="p-3.5 rounded-xl bg-[#131b2e] border border-white/10 flex flex-col justify-between hover:border-white/20 transition-all">
+          <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">NO₂</span>
               <ProvenanceBadge kind="modeled" />
@@ -200,7 +157,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           </div>
 
           {/* 4. SO2 */}
-          <div className="p-3.5 rounded-xl bg-[#131b2e] border border-white/10 flex flex-col justify-between hover:border-white/20 transition-all">
+          <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">SO₂</span>
               <ProvenanceBadge kind="modeled" />
@@ -218,7 +175,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           </div>
 
           {/* 5. Ozone O3 */}
-          <div className="p-3.5 rounded-xl bg-[#131b2e] border border-white/10 flex flex-col justify-between hover:border-white/20 transition-all">
+          <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">Ozone O₃</span>
               <ProvenanceBadge kind="modeled" />
@@ -236,7 +193,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
           </div>
 
           {/* 6. CO */}
-          <div className="p-3.5 rounded-xl bg-[#131b2e] border border-white/10 flex flex-col justify-between hover:border-white/20 transition-all">
+          <div className="rounded-xl border border-white/[0.07] bg-slate-950/25 p-3.5 transition hover:border-indigo-300/20">
             <div className="flex items-center justify-between">
               <span className="text-xs font-mono text-[#86948a] uppercase font-semibold">Carbon CO</span>
               <ProvenanceBadge kind="modeled" />
@@ -253,7 +210,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
             </div>
           </div>
         </div>
-      </div>
+      </details>
     </section>
   );
 };

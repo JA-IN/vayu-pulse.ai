@@ -80,6 +80,7 @@ export function Footer({
             <div className="text-xs space-y-1.5 text-slate-400">
               <p>• <strong className="text-slate-300">Air quality:</strong> <a className="underline" href="https://open-meteo.com/en/docs/air-quality-api" target="_blank" rel="noreferrer">Open-Meteo Air Quality API</a> (CAMS model)</p>
               <p>• <strong className="text-slate-300">Station AQI:</strong> <a className="underline" href="https://aqicn.org/api/" target="_blank" rel="noreferrer">World Air Quality Index (WAQI) API</a> (where a nearby station is available)</p>
+              <p>• <strong className="text-slate-300">India station pollutants:</strong> <a className="underline" href="https://www.data.gov.in/resource/real-time-air-quality-index-various-locations" target="_blank" rel="noreferrer">CPCB via data.gov.in</a> (concentrations, not AQI)</p>
               <p>• <strong className="text-slate-300">Weather:</strong> <a className="underline" href="https://open-meteo.com/en/docs" target="_blank" rel="noreferrer">Open-Meteo Forecast API</a></p>
               <p>• <strong className="text-slate-300">AI:</strong> <a className="underline" href="https://ai.google.dev/gemini-api/docs" target="_blank" rel="noreferrer">Google Gemini API</a></p>
               <p>• <strong className="text-slate-300">Health references:</strong> <a className="underline" href="https://www.who.int/publications/i/item/9789240034228" target="_blank" rel="noreferrer">WHO 2021 guidelines</a></p>
@@ -96,7 +97,7 @@ export function Footer({
               <span>Modeled Air Quality Data</span>
             </h4>
             <p className="text-slate-400">
-              The current AQI uses a nearby WAQI station reading when available and falls back to the Open-Meteo Air Quality API using CAMS model output. Pollutant concentrations, history, and forecasts are modeled estimates, not local ground-station measurements. Each AQI display identifies its source; station attributions are shown with the station reading.
+              The current AQI uses a nearby WAQI station reading when available and otherwise falls back to Open-Meteo CAMS modeled output. For Indian cities, CPCB station pollutant concentrations are presented separately and are not AQI scores. History and forecasts use modeled estimates. Each AQI display identifies its source; station readings include their provider and time.
             </p>
           </div>
           <div>

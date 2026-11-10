@@ -3,8 +3,11 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { Reading } from '../provenance.ts';
-import { fetchWaqiStationData, WaqiStationData } from './waqi.ts';
+import type { Reading } from '../provenance.ts';
+import { fetchWaqiStationData } from './waqi.ts';
+import type { WaqiStationData } from './waqi.ts';
+import { fetchCpcbStationData } from './cpcb.ts';
+import type { CpcbStationData } from './cpcb.ts';
 import {
   calculateCigaretteEquivalence,
   calculateWhoMultiple,
@@ -13,7 +16,7 @@ import {
   detectAnomalySpike,
   findSafeOutdoorWindow,
   calculateAqiTrend,
-  SafeWindow,
+  type SafeWindow,
 } from '../aqi.ts';
 
 export interface CityLocation {
@@ -63,6 +66,8 @@ export interface AirQualityDataset {
   source: string;
   stationData: WaqiStationData | null;
   stationError: string | null;
+  cpcbData: CpcbStationData | null;
+  cpcbError: string | null;
   current: {
     us_aqi: Reading<number>;
     pm2_5: Reading<number>;
@@ -123,28 +128,37 @@ export async function fetchAirQualityData(
       stationError: error instanceof Error ? error.message : 'WAQI station data is unavailable.',
     })
   );
-  const withStationReading = (
-    modelDataset: AirQualityDataset,
-    result: Awaited<typeof stationRequest>
-  ): AirQualityDataset => ({
-    ...modelDataset,
-    observedAt: result.stationData?.observedAt ?? modelDataset.observedAt,
-    isStale: result.stationData?.aqi.stale ?? modelDataset.isStale,
-    source: result.stationData
-      ? `${result.stationData.aqi.source}; pollutants and history from Open-Meteo CAMS`
-      : modelDataset.source,
-    stationData: result.stationData,
-    stationError: result.stationError,
-    current: {
-      ...modelDataset.current,
-      us_aqi: result.stationData?.aqi ?? modelDataset.current.us_aqi,
-    },
-  });
+  const cpcbRequest = fetchCpcbStationData(city).then(
+    (cpcbData) => ({ cpcbData, cpcbError: null }),
+    (error: unknown) => ({
+      cpcbData: null,
+      cpcbError: error instanceof Error ? error.message : 'CPCB station data is unavailable.',
+    })
+  );
+  const withStationData = async (modelDataset: AirQualityDataset): Promise<AirQualityDataset> => {
+    const [stationResult, cpcbResult] = await Promise.all([stationRequest, cpcbRequest]);
+    return {
+      ...modelDataset,
+      observedAt: stationResult.stationData?.observedAt ?? modelDataset.observedAt,
+      isStale: stationResult.stationData?.aqi.stale ?? modelDataset.isStale,
+      source: stationResult.stationData
+        ? `${stationResult.stationData.aqi.source}; pollutants and history from Open-Meteo CAMS`
+        : modelDataset.source,
+      stationData: stationResult.stationData,
+      stationError: stationResult.stationError,
+      cpcbData: cpcbResult.cpcbData,
+      cpcbError: cpcbResult.cpcbError,
+      current: {
+        ...modelDataset.current,
+        us_aqi: stationResult.stationData?.aqi ?? modelDataset.current.us_aqi,
+      },
+    };
+  };
 
   if (!forceRefresh) {
     const cached = cache.get(cacheKey) as CacheEntry<AirQualityDataset> | undefined;
     if (cached && now - cached.timestamp < CACHE_TTL_MS) {
-      return withStationReading(cached.data, await stationRequest);
+      return withStationData(cached.data);
     }
   }
 
@@ -273,6 +287,8 @@ export async function fetchAirQualityData(
     source: sourceName,
     stationData: null,
     stationError: null,
+    cpcbData: null,
+    cpcbError: null,
     current: {
       us_aqi: {
         value: rawAqi,
@@ -361,7 +377,7 @@ export async function fetchAirQualityData(
   };
 
   cache.set(cacheKey, { data: dataset, timestamp: now });
-  return withStationReading(dataset, await stationRequest);
+  return withStationData(dataset);
 }
 
 /**

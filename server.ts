@@ -8,6 +8,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 import { GoogleGenAI } from '@google/genai';
+import { fetchCpcbRecords } from './api/cpcb/air-quality.ts';
 
 dotenv.config();
 
@@ -89,6 +90,28 @@ app.get('/api/waqi/feed', async (req: Request, res: Response) => {
     return res.status(502).json({ status: 'error', message: 'WAQI could not provide station data' });
   } catch {
     return res.status(502).json({ status: 'error', message: 'WAQI could not be reached' });
+  }
+});
+
+app.get('/api/cpcb/air-quality', async (req: Request, res: Response) => {
+  const state = typeof req.query.state === 'string' ? req.query.state : '';
+  const city = typeof req.query.city === 'string' ? req.query.city : '';
+  if (!state || !city) {
+    res.set('Cache-Control', 'no-store');
+    return res.status(400).json({ message: 'State and city are required for CPCB station data.' });
+  }
+
+  try {
+    const records = await fetchCpcbRecords(state, city);
+    res.set('Cache-Control', 'public, max-age=0, s-maxage=1800, stale-while-revalidate=300');
+    return res.json({ records });
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'CPCB station data is unavailable.';
+    const statusCode = message.includes('not configured') ? 503
+      : message.includes('supported Indian state') || message.includes('valid Indian city') ? 400
+      : 502;
+    res.set('Cache-Control', 'no-store');
+    return res.status(statusCode).json({ message });
   }
 });
 
