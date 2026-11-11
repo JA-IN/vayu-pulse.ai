@@ -14,7 +14,7 @@ import {
 test('getAqiCategory returns correct categories and colors', () => {
   const good = getAqiCategory(35);
   assert.equal(good.label, 'Good');
-  assert.equal(good.color, '#10B981');
+  assert.equal(good.color, '#047857');
 
   const mod = getAqiCategory(80);
   assert.equal(mod.label, 'Moderate');
@@ -24,13 +24,31 @@ test('getAqiCategory returns correct categories and colors', () => {
 
   const unhealthy = getAqiCategory(184);
   assert.equal(unhealthy.label, 'Unhealthy');
-  assert.equal(unhealthy.color, '#F43F5E');
+  assert.equal(unhealthy.color, '#BE123C');
 
   const veryUnhealthy = getAqiCategory(240);
   assert.equal(veryUnhealthy.label, 'Very Unhealthy');
 
   const hazardous = getAqiCategory(380);
   assert.equal(hazardous.label, 'Hazardous');
+});
+
+test('AQI category text colors meet WCAG AA contrast on white', () => {
+  const luminance = (hex: string) => {
+    const channels = hex.match(/[0-9a-f]{2}/gi)!.map((channel) => {
+      const value = Number.parseInt(channel, 16) / 255;
+      return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+    });
+    return 0.2126 * channels[0] + 0.7152 * channels[1] + 0.0722 * channels[2];
+  };
+
+  for (const aqi of [25, 75, 125, 175, 250, 400, null]) {
+    const category = getAqiCategory(aqi);
+    for (const color of [category.color, category.textColor]) {
+      const contrast = 1.05 / (luminance(color) + 0.05);
+      assert.ok(contrast >= 4.5, `${category.label} text contrast is ${contrast.toFixed(2)}:1`);
+    }
+  }
 });
 
 test('calculateCigaretteEquivalence matches Berkeley Earth formula PM2.5 / 22', () => {

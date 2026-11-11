@@ -176,7 +176,7 @@ export const HistoricalTracker: React.FC<HistoricalTrackerProps> = ({
               className={`px-3 py-1 rounded-lg text-xs font-mono font-semibold transition-all ${
                 rangeFilter === mode
                   ? mode === 'diwali'
-                    ? 'bg-rose-500 text-white shadow-sm'
+                    ? 'bg-rose-700 text-white shadow-sm'
                     : 'bg-emerald-500 text-[#003824] shadow-sm'
                   : 'text-[#bbcabf] hover:text-white'
               }`}

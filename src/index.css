@@ -147,47 +147,143 @@
   filter: brightness(1.06);
 }
 
-/* Retheme legacy neutral utilities only inside the new light surfaces. */
+/* Keep legacy component text readable on the light dashboard surfaces. */
 :is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated)
   :is(
-    [class~="text-slate-50"],
-    [class~="text-slate-100"],
-    [class~="text-slate-200"],
-    [class~="text-slate-300"],
-    [class~="text-slate-400"],
-    [class~="text-slate-500"],
-    [class~="text-slate-600"]
+    [class*="text-slate-50"],
+    [class*="text-slate-100"],
+    [class*="text-slate-200"],
+    [class*="text-slate-300"],
+    [class*="text-slate-400"],
+    [class*="text-slate-500"],
+    [class*="text-slate-600"],
+    [class*="text-[#86948a]"],
+    [class*="text-[#bbcabf]"],
+    [class*="text-[#dae2fd]"]
   ) {
-  color: #172033;
+  color: #334155;
 }
 
 :is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated)
   :is(
-    [class~="bg-slate-950/25"],
-    [class~="bg-slate-950/30"],
-    [class~="bg-slate-950/35"],
-    [class~="bg-slate-950/40"],
-    [class~="bg-[#060e20]"],
-    [class~="bg-[#0f172a]"],
-    [class~="bg-[#131b2e]"],
-    [class~="bg-[#171f33]"],
-    [class~="bg-[#222a3d]"]
+    [class*="bg-slate-950/"],
+    [class*="bg-slate-900/"],
+    [class*="bg-black/"],
+    [class*="bg-[#060e20]"],
+    [class*="bg-[#0f172a]"],
+    [class*="bg-[#131b2e]"],
+    [class*="bg-[#171f33]"],
+    [class*="bg-[#222a3d]"],
+    [class*="bg-[#222d46]"],
+    [class*="bg-[#2d3449]"]
   ) {
   background-color: #f4f9ff;
 }
 
 :is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated)
   :is(
-    [class~="border-white/5"],
-    [class~="border-white/10"],
-    [class~="border-white/[0.07]"],
-    [class~="border-white/[0.08]"]
+    [class*="border-white/"]
   ) {
   border-color: #dce7f1;
 }
 
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-white"] {
+  color: #172033;
+}
+
+.button-gradient,
+.button-gradient [class*="text-white"] {
+  color: #ffffff;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-emerald-"] {
+  color: #047857;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-lime-"] {
+  color: #4d7c0f;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-amber-"] {
+  color: #92400e;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-orange-"] {
+  color: #c2410c;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-rose-"] {
+  color: #be123c;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-red-"] {
+  color: #b91c1c;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-purple-"] {
+  color: #7e22ce;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-violet-"] {
+  color: #6d28d9;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-blue-"] {
+  color: #1d4ed8;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-indigo-"] {
+  color: #4338ca;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-cyan-"] {
+  color: #0e7490;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-teal-"] {
+  color: #0f766e;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-sky-"] {
+  color: #0369a1;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-yellow-"] {
+  color: #854d0e;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-pink-"] {
+  color: #be185d;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) [class*="text-fuchsia-"] {
+  color: #a21caf;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated) .button-gradient,
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated)
+  .button-gradient [class*="text-white"] {
+  color: #ffffff;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated)
+  [class*="bg-rose-600"][class*="text-white"],
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated)
+  [class*="bg-rose-700"][class*="text-white"] {
+  color: #ffffff;
+}
+
 .leaflet-container {
   color: #172033;
+}
+
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated)
+  svg text[fill="#86948a"],
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated)
+  svg text[fill="#bbcabf"],
+:is(.data-card, .disclosure-card, .glass-panel, .glass-panel-elevated)
+  svg text[fill="#dae2fd"] {
+  fill: #526174;
 }
 
 footer [class~="text-slate-300"],

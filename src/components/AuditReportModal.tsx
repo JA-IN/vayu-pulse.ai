@@ -165,7 +165,7 @@ export function AuditReportModal({
                         <td className="py-2.5 font-semibold text-high-contrast print:text-black">{p.name}</td>
                         <td className="py-2.5">{p.val === null ? '—' : `${p.val.toFixed(2)} ${p.unit}`}</td>
                         <td className="py-2.5">{p.who} {p.unit} ({p.period})</td>
-                        <td className="py-2.5 font-bold" style={{ color: p.ratio === null ? '#86948a' : isExceeded ? '#f43f5e' : '#10b981' }}>
+                        <td className="py-2.5 font-bold" style={{ color: p.ratio === null ? '#526174' : isExceeded ? '#BE123C' : '#047857' }}>
                           {p.ratio === null ? '—' : `${p.ratio.toFixed(1)}x`}
                         </td>
                         <td className="py-2.5 text-right">
