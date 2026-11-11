@@ -18,6 +18,7 @@ import { SmartAlertsModal } from './components/SmartAlertsModal.tsx';
 import { AuditReportModal } from './components/AuditReportModal.tsx';
 import { Footer } from './components/Footer.tsx';
 import { CpcbStationCard } from './components/CpcbStationCard.tsx';
+import { DisclosureAction } from './components/DisclosureAction.tsx';
 import {
   CityLocation,
   PRESET_CITIES,
@@ -177,7 +178,7 @@ export default function App() {
                   <span className="mt-1 block text-base font-semibold text-slate-100">History &amp; forecast</span>
                   <span className="mt-1 block text-sm font-normal text-slate-400">Explore past readings, model projections, and outdoor windows.</span>
                 </span>
-                <span className="disclosure-icon" aria-hidden="true">+</span>
+                <DisclosureAction />
               </summary>
               <div className="mt-5 grid grid-cols-1 gap-5 lg:grid-cols-2">
                 <HistoricalTracker
@@ -195,7 +196,7 @@ export default function App() {
                   <span className="mt-1 block text-base font-semibold text-slate-100">Compare cities</span>
                   <span className="mt-1 block text-sm font-normal text-slate-400">Compare available AQI and modeled pollutant values.</span>
                 </span>
-                <span className="disclosure-icon" aria-hidden="true">+</span>
+                <DisclosureAction />
               </summary>
               <CityBattle
                 initialCity={currentCity}
@@ -213,7 +214,7 @@ export default function App() {
                   <span className="mt-1 block text-base font-semibold text-slate-100">Health guidance &amp; AI assistant</span>
                   <span className="mt-1 block text-sm font-normal text-slate-400">Personalized precautions and answers based on available data.</span>
                 </span>
-                <span className="disclosure-icon" aria-hidden="true">+</span>
+                <DisclosureAction />
               </summary>
               <div className="mt-5 space-y-5">
                 <HealthSafetySection currentAqi={rawAqi} />

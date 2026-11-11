@@ -8,6 +8,7 @@ import { getAqiCategory } from '../lib/aqi.ts';
 import { ProvenanceBadge } from './ProvenanceBadge.tsx';
 import { BiosphereMoodConverter } from './BiosphereMoodConverter.tsx';
 import { TelemetryCube } from './TelemetryCube.tsx';
+import { DisclosureAction } from './DisclosureAction.tsx';
 
 interface HeroSectionProps {
   data: AirQualityDataset;
@@ -71,7 +72,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
             <span className="mt-1 block text-base font-semibold text-slate-100">3D cube &amp; air-quality illustrations</span>
             <span className="mt-1 block text-sm font-normal text-slate-400">Optional interactive views based on the displayed AQI.</span>
           </span>
-          <span className="disclosure-icon" aria-hidden="true">+</span>
+          <DisclosureAction />
         </summary>
         <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-2">
           <BiosphereMoodConverter
@@ -92,7 +93,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ data, diwaliSmogMode }
             <span className="mt-1 block text-base font-semibold text-slate-100">Pollutant estimates &amp; health references</span>
             <span className="mt-1 block text-sm font-normal text-slate-400">Open-Meteo CAMS concentrations and guideline comparisons.</span>
           </span>
-          <span className="disclosure-icon" aria-hidden="true">+</span>
+          <DisclosureAction />
         </summary>
         <div className="mt-5 rounded-2xl border border-blue-200 bg-blue-50 p-4 text-xs leading-5 text-slate-700">
           These values are CAMS model estimates, not CPCB station measurements. CPCB measurements, when available, are shown separately below.
